@@ -17,8 +17,12 @@ use App\Http\Controllers;
 
 # LOGIN AND LOGOUT ROUTE
 Route::post('/login', [Controllers\Auth\AuthController::class, 'login']);
-Route::post('/logout', [Controllers\Auth\AuthController::class, 'logout']);
+Route::middleware('auth:sanctum')->delete('/logout', [Controllers\Auth\AuthController::class, 'logout']);
 
+# SITE ROUTES
+Route::post('/users-site', [Controllers\Users\UserController::class, 'store']);
+
+# AUTHENTICATED ROUTES
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

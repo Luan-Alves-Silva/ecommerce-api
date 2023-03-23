@@ -61,7 +61,7 @@ class UserController extends Controller
                 'name', 'email',
             ]);
             
-            $inputs['password'] = bcrypt("123456");
+            $inputs['password'] = bcrypt($request->password);
 
             # ARMAZENAR REGISTRO NO BANCO DE DADOS
             $user = User::create($inputs);
@@ -102,17 +102,6 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -121,7 +110,26 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+
+            $user = User::findOrFail($id);
+
+            # ARMAZENAR TODOS OS VALORES NECESSÁRIOS PARA ATUALIZAR O USUARIO RECEBIDOS DO REQUEST
+            $inputs = $request->only([
+                'name', 'email',
+            ]);
+
+            # ATUALIZAR DADOS
+            $user->fill($inputs)->update();
+        
+            return response()->json([
+                'message' => 'Usuário atualizado com sucesso!',
+                'user' => $user
+            ]);
+
+        } catch (\Exception $e) {
+            throw($e);
+        }
     }
 
     /**
